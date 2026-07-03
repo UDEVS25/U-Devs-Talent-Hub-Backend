@@ -79,3 +79,114 @@ exports.applyToJob = async (req, res) => {
     });
   }
 };
+
+//fetch all of my appplications
+exports.getMyApplications = async (req,res) =>{
+  try{
+     const {user_id} = req.params;
+     const applications = await db.query('SELECT * FROM applications WHERE user_id=$1',[user_id]);
+     if(applications.rows.length === 0){
+      return res.status(404).json({
+        success:false,
+        message:'No application found'
+      })
+     }
+     res.status(200).json({
+      success:true,
+      message:"Applications fetched successfully",
+      data:applications.rows
+     })
+  }
+  catch(err){
+    console.error("Error fetching application",err.message)
+    res.status(500).json({
+      success:false,
+      message:"Internal server error ",
+      error:err.message
+    })
+  }
+}
+
+//track application status
+exports.trackApplicationStatus = async (req,res)=>{
+  try{
+    const {job_id} = req.params;
+    const applications = await db.query('SELECT current_stage FROM applications WHERE job_id=$1',[job_id])
+      if(applications.rows.length === 0){
+      return res.status(404).json({
+        success:false,
+        message:'No application found'
+      })
+     }
+    res.status(200).json({
+      success:true,
+      data:applications.rows
+    })
+  }
+  catch(err){
+console.error("Error fetching status application",err.message)
+    res.status(500).json({
+      success:false,
+      message:"Internal server error ",
+      error:err.message
+    })
+  }
+}
+
+//Update data of an application
+exports.updateApplicationData =  async (req,res) =>{
+  try{
+    const {id} = req.params;
+    const {cover_letter, resume_url} = req.body;
+    const application = await db.query('SELECT * FROM applications WHERE id=$1',[id]);
+      if(applications.rows.length === 0){
+      return res.status(404).json({
+        success:false,
+        message:'No application found'
+      })
+     }
+     const updatedApplication= await db.query('UPDATE applications SET cover_letter=$1 , resume_url=$2 WHERE id=$3 RETURNING * ',[cover_letter,resume_url,id])
+      res.status(200).json({
+      success:true,
+      message:'Application updated successfully',
+      data:updatedApplication.rows
+    })
+  }
+  catch(err){
+    console.error("Error updating application",err.message)
+    res.status(500).json({
+      success:false,
+      message:"Internal server error ",
+      error:err.message
+    })
+  }
+  
+}
+
+//Delete application
+exports.deleteApplicationData =  async (req,res) =>{
+  try{
+    const {id} = req.params;
+    const application = await db.query('SELECT * FROM applications WHERE id=$1',[id]);
+      if(applications.rows.length === 0){
+      return res.status(404).json({
+        success:false,
+        message:'No application found'
+      })
+     }
+     const delApplication= await db.query('DELETE FROM applications WHERE id=$1 RETURNING * ',[id])
+      res.status(200).json({
+      success:true,
+      message:'Application deleted successfully'
+    })
+  }
+  catch(err){
+    console.error("Error deleting application",err.message)
+    res.status(500).json({
+      success:false,
+      message:"Internal server error ",
+      error:err.message
+    })
+  }
+  
+}
