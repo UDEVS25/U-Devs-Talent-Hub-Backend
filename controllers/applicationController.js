@@ -139,7 +139,7 @@ exports.updateApplicationData =  async (req,res) =>{
     const {id} = req.params;
     const {cover_letter, resume_url} = req.body;
     const application = await db.query('SELECT * FROM applications WHERE id=$1',[id]);
-      if(applications.rows.length === 0){
+      if(application.rows.length === 0){
       return res.status(404).json({
         success:false,
         message:'No application found'
@@ -168,7 +168,7 @@ exports.deleteApplicationData =  async (req,res) =>{
   try{
     const {id} = req.params;
     const application = await db.query('SELECT * FROM applications WHERE id=$1',[id]);
-      if(applications.rows.length === 0){
+      if(application.rows.length === 0){
       return res.status(404).json({
         success:false,
         message:'No application found'
