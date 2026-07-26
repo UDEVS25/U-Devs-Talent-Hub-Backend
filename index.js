@@ -5,7 +5,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '.env') }); // Explicit
 
 // Config layers import kar rahe hain
 const db = require('./config/db');
-
+const { createUserTable, createJobTable, createApplicationTable, createAssessmentTable } = require('./model/table');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
