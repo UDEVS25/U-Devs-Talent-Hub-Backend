@@ -190,3 +190,23 @@ exports.deleteApplicationData =  async (req,res) =>{
   }
   
 }
+ 
+exports.getAllApplications = async (req,res) =>{
+  try{
+     const applications = await db.query('SELECT * FROM applications ');
+  
+     res.status(200).json({
+      success:true,
+      message:"Applications fetched successfully",
+      data:applications.rows
+     })
+  }
+  catch(err){
+     console.error('❌ FETCH applicants ERROR:', err.message);
+     res.status(500).json({
+      success:false,
+      message:"Internal server error ",
+      error:err.message
+    })
+  }
+}

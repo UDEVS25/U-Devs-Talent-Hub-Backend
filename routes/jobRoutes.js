@@ -10,9 +10,10 @@ const { protect, authorize } = require('../middleware/authMiddleware');
  */
 
 // Route 1: Only authenticated users with the 'admin' role can create a job posting
-router.post('/create', protect, authorize('admin'), jobController.createJob);
+router.post('/create',protect,  jobController.createJob);
 
 // Route 2: Public or authenticated feed to fetch all active job openings
-router.get('/all', jobController.getAllJobs);
-
+router.get('/all',protect, jobController.getAllJobs);
+router.put('/update/:id',protect,jobController.updateJob);
+router.delete('/delete/:id',protect,jobController.deleteJob);
 module.exports = router;
